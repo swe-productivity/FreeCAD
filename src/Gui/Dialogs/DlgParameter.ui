@@ -83,7 +83,7 @@
      <item>
       <widget class="QPushButton" name="buttonFind">
        <property name="text">
-        <string>Find</string>
+        <string>Advanced Search</string>
        </property>
       </widget>
      </item>
