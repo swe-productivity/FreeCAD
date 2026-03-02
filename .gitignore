@@ -139,3 +139,5 @@ scratch/
 notes/drafts/
 __pycache__/
 *.pytest_cache/
+
+data/*

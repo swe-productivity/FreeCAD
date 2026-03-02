@@ -102,6 +102,8 @@ const char* DrawViewDimension::TypeEnums[] = {"Distance",
 
 const char* DrawViewDimension::MeasureTypeEnums[] = {"True", "Projected", nullptr};
 
+const char* DrawViewDimension::AngleModeEnums[] = {"Normal", "Inverted", "Complementary", "Supplementary", nullptr};
+
 // constraint to set the step size to 0.1
 static const App::PropertyQuantityConstraint::Constraints ToleranceConstraint = {
     -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 0.1};
@@ -180,11 +182,19 @@ DrawViewDimension::DrawViewDimension()
                       "negative value of 'Over Tolerance'");
     UnderTolerance.setUnit(Base::Unit::Length);
     UnderTolerance.setConstraints(&ToleranceConstraint);
-    ADD_PROPERTY_TYPE(Inverted,
-                      (false),
-                      "",
-                      App::Prop_Output,
-                      "The dimensional value is displayed inverted");
+    // ADD_PROPERTY_TYPE(Inverted,
+    //                   (false),
+    //                   "",
+    //                   App::Prop_Output,
+    //                   "The dimensional value is displayed inverted");
+
+    AngleMode.setEnums(AngleModeEnums);
+    ADD_PROPERTY(AngleMode,
+                 ((long)0),
+                 "",
+                 App::Prop_Output,
+                 "How the angle is displayed: Normal, Inverted, Complementary (90 degree angle), Supplementary (180 degree angle)";
+                );
 
     ADD_PROPERTY_TYPE(AngleOverride,
                       (false),
@@ -451,6 +461,15 @@ void DrawViewDimension::handleChangedPropertyType(Base::XMLReader& reader,
         UnderToleranceProperty.Restore(reader);
         UnderTolerance.setValue(UnderToleranceProperty.getValue());
     }
+    else if (prop == &AngleMode && strcmp(TypeName, "App::PropertyEnumeration") == 0) {
+        App::PropertyBool InvertedProperty;
+        InvertedProperty.Restore(reader);
+       // If the old value was Inverted, set the AngleMode to Inverted (1)
+
+       // otherwise set the AngleMode to Normal (0)
+       AngleMode.setValue(InvertedProperty.getValue() ? Inverted : Normal);
+    }
+
 }
 
 short DrawViewDimension::mustExecute() const
@@ -678,12 +697,32 @@ double DrawViewDimension::getDimValue()
     }
 
     result = fabs(result);
-    if (Inverted.getValue()) {
-        if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
-            result = CircleDegrees - result;
-        }
-        else {
-            result = -result;
+    // if (Inverted.getValue()) {
+    //     if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
+    //         result = CircleDegrees - result;
+    //     }
+    //     else {
+    //         result = -result;
+    //     }
+    // }
+
+    // Apply angle mode transformations for angle dimensions
+    if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
+        constexpr double RightAngle(90.0);
+        constexpr double StraightAngle(180.0);
+        switch ( static_cast<AngleModeType>(AngleMode.getValue())) {
+            case Inverted:
+                result = CircleDegrees - result;
+                break;
+            case Complementary:
+                result = RightAngle - result;
+                break;
+            case Supplementary:
+                result = StraightAngle - result;
+                break;
+            case Normal:
+            default:
+                break;
         }
     }
     return result;
