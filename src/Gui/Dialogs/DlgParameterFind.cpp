@@ -42,7 +42,7 @@ DlgParameterFind::DlgParameterFind(DlgParameterImp* parent)
 
     QPushButton* btn = ui->buttonBox->button(QDialogButtonBox::Ok);
     if (btn) {
-        btn->setText(tr("Search Next"));
+        btn->setText(tr("Find Next"));
         btn->setDisabled(true);
     }
 }
