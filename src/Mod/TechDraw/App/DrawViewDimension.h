@@ -70,6 +70,13 @@ public:
         Angle3Pt
     };
 
+    enum AngleModeType
+    {
+        Normal,
+        Inverted,
+        Complementary,
+        Supplementary
+    };
     /// Constructor
     DrawViewDimension();
     ~DrawViewDimension() override;
@@ -80,7 +87,7 @@ public:
     App::PropertyEnumeration Type;          // DistanceX, DistanceY, Diameter, etc.
 
     App::PropertyBool TheoreticalExact;
-    App::PropertyBool Inverted;
+    App::PropertyEnumeration AngleMode;
     App::PropertyString FormatSpec;
     App::PropertyString FormatSpecOverTolerance;
     App::PropertyString FormatSpecUnderTolerance;
@@ -266,6 +273,7 @@ private:
     Measure::Measurement* measurement;
     static const char* TypeEnums[];         //NOLINT
     static const char* MeasureTypeEnums[];  //NOLINT
+    static const char* AngleModeEnums[];     //NOLINT
     void dumpRefs2D(const char* text) const;
     // Dimension "geometry"
     pointPair m_linearPoints;

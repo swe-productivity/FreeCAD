@@ -2052,9 +2052,10 @@ void QGIViewDimension::drawAngle(TechDraw::DrawViewDimension* dimension,
         ? 2
         : 1;
 
-    // Inverted dimensions display reflex angles (fi > PI), regular ones oblique angles (fi <= PI/2)
+    // Inverted mode displays reflex angles (fi > PI), regular ones oblique angles (fi <= PI/2)
+    bool showReflexAngle = (dimension->AngleMode.getValue() == TechDraw::DrawViewDimension::AngleModeType::Inverted);
     double startRotation =
-        DrawUtil::angleDifference(startAngle, endAngle, dimension->Inverted.getValue());
+        DrawUtil::angleDifference(startAngle, endAngle, showReflexAngle);
     if (arrowCount < 2) {
         // For single arrow, the effective angle span is 0, but still we need to know
         // the angle orientation. Floating point positive/negative zero comes to rescue...
