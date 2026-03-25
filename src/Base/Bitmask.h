@@ -159,18 +159,45 @@ public:
     constexpr Flags<Enum> operator&(const Enum &f) const {
         return i & f;
     }
+    constexpr Flags<Enum> &operator^=(const Flags<Enum> &other) {
+        i ^= other.i;
+        return *this;
+    }
+    constexpr Flags<Enum> &operator^=(const Enum &f) {
+        i ^= f;
+        return *this;
+    }
+    constexpr Flags<Enum> operator^(const Flags<Enum> &other) const {
+        return i ^ other.i;
+    }
+    constexpr Flags<Enum> operator^(const Enum &f) const {
+        return i ^ f;
+    }
+    constexpr bool operator==(const Flags<Enum> &other) const {
+        return isEqual(other);
+    }
+    constexpr bool operator!=(const Flags<Enum> &other) const {
+        return !isEqual(other);
+    }
+    constexpr bool operator==(const Enum &f) const {
+        return i == f;
+    }
+    constexpr bool operator!=(const Enum &f) const {
+        return i != f;
+    }
     constexpr Flags<Enum> operator~() const {
         return ~i;
     }
 
     constexpr bool operator!() const {
-        return !i;
+        using u = typename std::underlying_type<Enum>::type;
+        return !static_cast<u>(i);
     }
 
-    explicit operator bool() const {
+    constexpr explicit operator bool() const {
         return toUnderlyingType() != 0;
     }
-    typename std::underlying_type<Enum>::type toUnderlyingType() const {
+    constexpr typename std::underlying_type<Enum>::type toUnderlyingType() const {
         return static_cast<typename std::underlying_type<Enum>::type>(i);
     }
 };
