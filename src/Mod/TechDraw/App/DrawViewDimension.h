@@ -87,7 +87,6 @@ public:
     App::PropertyEnumeration Type;          // DistanceX, DistanceY, Diameter, etc.
 
     App::PropertyBool TheoreticalExact;
-    // App::PropertyBool Inverted;
     App::PropertyEnumeration AngleMode;
     App::PropertyString FormatSpec;
     App::PropertyString FormatSpecOverTolerance;

@@ -182,12 +182,7 @@ DrawViewDimension::DrawViewDimension()
                       "negative value of 'Over Tolerance'");
     UnderTolerance.setUnit(Base::Unit::Length);
     UnderTolerance.setConstraints(&ToleranceConstraint);
-    // ADD_PROPERTY_TYPE(Inverted,
-    //                   (false),
-    //                   "",
-    //                   App::Prop_Output,
-    //                   "The dimensional value is displayed inverted");
-
+   
     AngleMode.setEnums(AngleModeEnums);
     ADD_PROPERTY(AngleMode,
                  ((long)0),
@@ -697,15 +692,6 @@ double DrawViewDimension::getDimValue()
     }
 
     result = fabs(result);
-    // if (Inverted.getValue()) {
-    //     if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
-    //         result = CircleDegrees - result;
-    //     }
-    //     else {
-    //         result = -result;
-    //     }
-    // }
-
     // Apply angle mode transformations for angle dimensions
     if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
         constexpr double RightAngle(90.0);
@@ -723,6 +709,10 @@ double DrawViewDimension::getDimValue()
             case Normal:
             default:
                 break;
+        }
+    } else {
+        if (Inverted.getValue()) {
+               result = -result;
         }
     }
     return result;
